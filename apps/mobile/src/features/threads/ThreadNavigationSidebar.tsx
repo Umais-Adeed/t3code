@@ -59,6 +59,7 @@ import {
 } from "../home/WorkspaceConnectionTitle";
 import { SidebarHeaderActions } from "./sidebar-header-actions";
 import { ThreadListToolbar } from "../home/ThreadListToolbar";
+import { useProjectFilterMenuIcon } from "../home/useProjectFilterMenuIcon";
 import { useToolbarLayout } from "../../components/ui/useToolbarLayout";
 import { useFabScroll } from "../home/FabScrollContext";
 import { SidebarFilterButton } from "./sidebar-filter-button";
@@ -222,7 +223,9 @@ function ThreadNavigationSidebarPane(
   const projectFilterOptions = projectScopes.map((scope) => ({
     key: scope.key,
     label: scope.title,
+    representative: scope.representative,
   }));
+  const renderProjectFilterIcon = useProjectFilterMenuIcon(projectFilterOptions);
   const projectTitleByProjectKey = useMemo(
     () =>
       new Map(
@@ -343,16 +346,19 @@ function ThreadNavigationSidebarPane(
     {
       id: "environment",
       title: "Environment",
+      image: "desktopcomputer",
       subactions: [
         {
           id: "environment:all",
           title: "All environments",
+          image: "square.grid.2x2",
           subtitle: "Show threads from every environment",
           state: options.selectedEnvironmentId === null ? "on" : "off",
         },
         ...environments.map((environment) => ({
           id: `environment:${environment.environmentId}`,
           title: environment.label,
+          image: "desktopcomputer",
           state:
             options.selectedEnvironmentId === environment.environmentId
               ? ("on" as const)
@@ -366,16 +372,19 @@ function ThreadNavigationSidebarPane(
           {
             id: "project",
             title: "Project",
+            image: "folder.fill",
             subactions: [
               {
                 id: "project:all",
                 title: "All projects",
+                image: "square.grid.2x2",
                 subtitle: "Show threads from every project",
                 state: selectedProjectKey === null ? "on" : "off",
               },
               ...projectFilterOptions.map((project) => ({
                 id: `project:${project.key}`,
                 title: project.label,
+                image: project.representative.isScratch ? "bubble.left" : undefined,
                 state: selectedProjectKey === project.key ? ("on" as const) : ("off" as const),
               })),
             ],
@@ -853,6 +862,7 @@ function ThreadNavigationSidebarPane(
           filterActions={listMenuActions}
           filterCustomized={filterCustomized}
           onFilterAction={handleListMenuAction}
+          renderFilterIcon={renderProjectFilterIcon}
           onOpenEnvironments={props.onOpenEnvironmentSettings}
           onRequestVisibility={props.onRequestVisibility}
         />

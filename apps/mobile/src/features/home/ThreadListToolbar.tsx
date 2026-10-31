@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ComponentProps } from "react";
+import { useEffect, useRef, useState, type ComponentProps, type ReactNode } from "react";
 import { useNavigation, useNavigationState } from "@react-navigation/native";
 import { useWorkspaceTabs } from "../workspace/WorkspaceTabsContext";
 import {
@@ -25,6 +25,7 @@ export function ThreadListToolbar(props: {
   readonly filterActions: MenuAction[];
   readonly filterCustomized: boolean;
   readonly onFilterAction: NonNullable<ComponentProps<typeof Menu>["onPressAction"]>;
+  readonly renderFilterIcon?: (action: MenuAction) => ReactNode;
   readonly onOpenEnvironments: () => void;
   readonly sidebar?: boolean;
   readonly onLayout?: (event: LayoutChangeEvent) => void;
@@ -89,7 +90,11 @@ export function ThreadListToolbar(props: {
     />
   );
   const filterButton = connectionState.hasConnections ? (
-    <AndroidAnchoredMenu actions={props.filterActions} onPressAction={props.onFilterAction}>
+    <AndroidAnchoredMenu
+      actions={props.filterActions}
+      onPressAction={props.onFilterAction}
+      renderLeadingIcon={props.renderFilterIcon}
+    >
       {(open) => (
         <AndroidHeaderIconButton
           accessibilityLabel="Filter threads"
