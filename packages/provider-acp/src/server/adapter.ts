@@ -309,9 +309,7 @@ export function acpPerTurnPromptUsage(
   if (usage == null) {
     return { usageScope: "main_agent", usageStatus: "unavailable", hasSubagents };
   }
-  const inputTokens = geminiUsage
-    ? usage.inputTokens + (usage.cachedReadTokens ?? 0)
-    : usage.inputTokens;
+  const inputTokens = usage.inputTokens;
   const outputTokens = geminiUsage
     ? usage.outputTokens + (usage.thoughtTokens ?? 0)
     : usage.outputTokens;
@@ -598,7 +596,7 @@ export interface AcpAdapterV2Flavor {
    * leaves usage semantics open, so this stays unset until proven live.
    */
   readonly reportsPerTurnPromptUsage?: boolean;
-  /** Gemini-style usage: inputTokens leaves out cachedReadTokens, outputTokens leaves out thoughtTokens. */
+  /** Gemini-style usage: outputTokens leaves out thoughtTokens; inputTokens already includes cachedReadTokens. */
   readonly geminiPromptUsage?: boolean;
   /**
    * Fails a dispatched prompt after this long with no update for its session while no
